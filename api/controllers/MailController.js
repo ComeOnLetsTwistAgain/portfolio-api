@@ -12,16 +12,22 @@ const to = "antoine.souesme@gmail.com";
 module.exports = {
 
 	send(req, res) {
-		const subject = req.param('subject');
-		const text = req.param('text');
+		const name = req.param('name');
+		const email = req.param('email');
+		const phone = req.param('phone');
+		const message = req.param('message');
 
-		if(!text || !subject) return res.send(400, 'Subject and Text are required');
+		if(!name || !email || !phone || !message) return res.send(400, 'All params are required');
+
+		const text = name + " - " + email + " - " + phone + "\n\n" + message;
 
 		MailService.send({
 			to,
-			subject,
+			subject: 'Demande de contact antoinesouesme.fr',
 			text,
 		}, (err, info) => {
+			if(err) return res.send(err.code, err.message);
+
 			sails.log('[MAIL] email sent to ==>', to);
 		});
 
